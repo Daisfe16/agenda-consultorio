@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Importar controladores
 const agendaController = require('../controllers/agendaController');
-const turnoController = require('../controllers/turnosController');
+const turnosController = require('../controllers/turnosController');
 const profesionalController = require('../controllers/profesionalController');
 
 router.get('/login', (req, res) => {
@@ -22,18 +22,15 @@ router.get('/agendas/:id', agendaController.mostrarAgenda); // Mostrar una agend
 router.post('/agendas/edit/:id', agendaController.editarAgenda); // Editar una agenda
 
 // Rutas para los turnos
-router.get('/turnos', turnoController.mostrarTurnos); // Mostrar todos los turnos
-router.get('/turnos/nuevo', (req, res) => {
-    res.render('nuevoTurno'); // Renderizar vista para crear nuevo turno
-});
-router.post('/turnos', turnoController.crearTurno); // Crear un nuevo turno
-router.get('/turnos/:id', turnoController.mostrarTurno); // Ver el detalle del turno
-router.get('/turnos/:id/editar', turnoController.mostrarFormularioEditarTurno); // Mostrar el formulario de edición
-router.post('/turnos/:id/editar', turnoController.editarTurno); // Procesar la edición
-
-router.post('/turnos/:id/eliminar', turnoController.eliminarTurno); // Eliminar el turno
-
-
+router.get('/turnos', turnosController.mostrarTurnos); // Mostrar todos los turnos
+router.get('/turnos/nuevo', turnosController.mostrarFormularioNuevoTurno);
+router.post('/turnos', turnosController.crearTurno);
+router.get('/profesionales/especialidad/:especialidadId', turnosController.obtenerProfesionalesPorEspecialidad);
+router.post('/turnos', turnosController.crearTurno); // Crear un nuevo turno
+router.get('/turnos/:id', turnosController.mostrarTurno); // Ver el detalle del turno
+router.get('/turnos/:id/editar', turnosController.mostrarFormularioEditarTurno); // Mostrar el formulario de edición
+router.post('/turnos/:id/editar', turnosController.editarTurno); // Procesar la edición
+router.post('/turnos/:id/eliminar', turnosController.eliminarTurno); // Eliminar el turno
 // Ruta para mostrar la lista de profesionales
 router.get('/profesionales', profesionalController.mostrarProfesional);
 router.get('/profesionales/nuevo', profesionalController.formularioNuevoProfesional);

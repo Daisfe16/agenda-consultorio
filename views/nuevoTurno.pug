@@ -2,7 +2,7 @@ doctype html
 html
   head
     title Crear Nuevo Turno
-    link(rel='stylesheet', href='/styles.css') 
+    link(rel='stylesheet', href='/styles.css')
   body
     h1 Crear Nuevo Turno
     form(action='/turnos', method='POST')
@@ -14,16 +14,51 @@ html
         input(type='time', name='hora', required)
       div
         label(for='paciente') Paciente:
-        input(type='text', name='paciente_id', required)
+        select(name='paciente_id', required)
+          each paciente in pacientes
+            option(value=paciente.id) #{paciente.nombre_completo}
       div
-        label(for='profesional') Profesional: 
-        input(type='text', name='profesional_id', required)
-      div 
-        label(for='especialidad') Especialidad: 
-        input(type='text', name='especialidad_id', required)
-      div 
-        label(for='sucursal') Especialidad: 
-        input(type='text', name='sucursal_id', required)
-      div          
+        label(for='especialidad') Especialidad:
+        select(name='especialidad_id' id='especialidad_id' required)
+          option(value='') Selecciona una especialidad
+          each especialidad in especialidades
+            option(value=especialidad.id) #{especialidad.nombre}
+      div
+        label(for='profesional') Profesional:
+        select(name='profesional_id' id='profesional_id' required)
+          option(value='') Selecciona un profesional
+      div
         button(type='submit') Crear Turno
     a(href='/turnos') Volver a la lista de turnos
+
+    // Script para actualizar la lista de profesionales según la especialidad seleccionada
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        const especialidadSelect = document.getElementById('especialidad_id');
+        const profesionalSelect = document.getElementById('profesional_id');
+
+        especialidadSelect.addEventListener('change', function() {
+          const especialidadId = this.value;
+
+          if (especialidadId) {
+            fetch(`/profesionales/especialidad/${especialidadId}`)
+              .then(response => response.json())
+              .then(profesionales => {
+                profesionalSelect.innerHTML = '<option value="">Selecciona un profesional</option>';
+
+                profesionales.forEach(profesional => {
+                  const option = document.createElement('option');
+                  option.value = profesional.id;
+                  option.textContent = profesional.nombre_completo;
+                  profesionalSelect.appendChild(option);
+                });
+              })
+              .catch(error => {
+                console.error('Error al cargar los profesionales:', error);
+                profesionalSelect.innerHTML = '<option value="">Error al cargar profesionales</option>';
+              });
+          } else {
+            profesionalSelect.innerHTML = '<option value="">Selecciona un profesional</option>';
+          }
+        });
+      });
