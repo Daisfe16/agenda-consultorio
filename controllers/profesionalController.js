@@ -80,9 +80,9 @@ exports.activarProfesional = (req, res) => {
 // Método para guardar los horarios de un profesional
 exports.guardarHorarios = (req, res) => {
   const profesionalId = req.params.id;
-  const { horario_manana, horario_tarde } = req.body;
+  const { horario_manana_inicio, horario_manana_fin, horario_tarde_inicio, horario_tarde_fin } = req.body;
 
-  Profesional.configurarHorario(profesionalId, horario_manana, horario_tarde, (err) => {
+  Profesional.configurarHorario(profesionalId, horario_manana_inicio, horario_manana_fin, horario_tarde_inicio, horario_tarde_fin, (err) => {
     if (err) return res.status(500).send('Error al configurar el horario del profesional');
     res.redirect(`/profesionales/${profesionalId}/editar`);
   });

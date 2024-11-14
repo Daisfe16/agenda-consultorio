@@ -8,12 +8,6 @@ html
   body
     h1 Crear Nuevo Turno
     form(action='/turnos', method='POST')
-      div
-        label(for='fecha') Fecha:
-        input(type='date', name='fecha', id='fecha', required)
-      div
-        label(for='hora') Hora:
-        div(id='horarios-disponibles') Cargando horarios...
 
       div
         label(for='paciente') Paciente:
@@ -31,6 +25,12 @@ html
         select(name='profesional_id' id='profesional_id' required)
           option(value='') Selecciona un profesional
       div
+        label(for='fecha') Fecha:
+        input(type='date', name='fecha', id='fecha', required)
+      div
+        label(for='hora') Hora:
+        div(id='horarios-disponibles') Cargando horarios...
+             
         button(type='submit') Crear Turno
     a(href='/turnos') Volver a la lista de turnos
 

@@ -3,6 +3,20 @@ html
   head
     title Agregar Nuevo Profesional
     link(rel='stylesheet', href='/styles.css')
+    script.
+      function toggleHorarioFin(inicioId, finId) {
+        const inicioSelect = document.getElementById(inicioId);
+        const finSelect = document.getElementById(finId);
+        if (inicioSelect.value === "no") {
+          finSelect.disabled = true;
+          finSelect.value = "no";  // Selecciona automáticamente "No disponible"
+        } else {
+          finSelect.disabled = false;
+          if (finSelect.value === "no") {
+            finSelect.value = "";  // Restablece el valor si estaba en "No disponible"
+          }
+        }
+      }
   body
     .container
       h1 Agregar Nuevo Profesional
@@ -27,15 +41,68 @@ html
 
         div
           h3 Configuración de Horarios
-          label(for="horario_manana") Horario Mañana (9:00 - 13:00)
-          select(name="horario_manana")
-            option(value="9:00-13:00") 9:00 - 13:00
-            option(value="no") No disponible
+          
+          // Horario Mañana
+          div
+            label(for="horario_manana_inicio") Inicio Mañana
+            select(name="horario_manana_inicio" id="horario_manana_inicio" onchange="toggleHorarioFin('horario_manana_inicio', 'horario_manana_fin')")
+              option(value="no") No disponible
+              option(value="09:00") 9:00
+              option(value="09:30") 9:30
+              option(value="10:00") 10:00
+              option(value="10:30") 10:30
+              option(value="11:00") 11:00
+              option(value="11:30") 11:30
+              option(value="12:00") 12:00
+              option(value="12:30") 12:30
+              option(value="13:00") 13:00
 
-          label(for="horario_tarde") Horario Tarde (16:00 - 21:00)
-          select(name="horario_tarde")
-            option(value="16:00-21:00") 16:00 - 21:00
-            option(value="no") No disponible
+          div
+            label(for="horario_manana_fin") Fin Mañana
+            select(name="horario_manana_fin" id="horario_manana_fin")
+              option(value="no") No disponible
+              option(value="09:00") 9:00
+              option(value="09:30") 9:30
+              option(value="10:00") 10:00
+              option(value="10:30") 10:30
+              option(value="11:00") 11:00
+              option(value="11:30") 11:30
+              option(value="12:00") 12:00
+              option(value="12:30") 12:30
+              option(value="13:00") 13:00
+
+          // Horario Tarde
+          div
+            label(for="horario_tarde_inicio") Inicio Tarde
+            select(name="horario_tarde_inicio" id="horario_tarde_inicio" onchange="toggleHorarioFin('horario_tarde_inicio', 'horario_tarde_fin')")
+              option(value="no") No disponible
+              option(value="16:00") 16:00
+              option(value="16:30") 16:30
+              option(value="17:00") 17:00
+              option(value="17:30") 17:30
+              option(value="18:00") 18:00
+              option(value="18:30") 18:30
+              option(value="19:00") 19:00
+              option(value="19:30") 19:30
+              option(value="20:00") 20:00
+              option(value="20:30") 20:30
+              option(value="21:00") 21:00
+
+          div
+            label(for="horario_tarde_fin") Fin Tarde
+            select(name="horario_tarde_fin" id="horario_tarde_fin")
+              option(value="no") No disponible
+              option(value="16:00") 16:00
+              option(value="16:30") 16:30
+              option(value="17:00") 17:00
+              option(value="17:30") 17:30
+              option(value="18:00") 18:00
+              option(value="18:30") 18:30
+              option(value="19:00") 19:00
+              option(value="19:30") 19:30
+              option(value="20:00") 20:00
+              option(value="20:30") 20:30
+              option(value="21:00") 21:00
 
         div
           button(type="submit" class="button") Guardar
