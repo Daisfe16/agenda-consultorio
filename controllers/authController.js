@@ -1,4 +1,4 @@
-const db = require('../models/db'); 
+const db = require('../models/Db'); 
 const bcrypt = require('bcryptjs');
 
 // Mostrar el formulario de login
