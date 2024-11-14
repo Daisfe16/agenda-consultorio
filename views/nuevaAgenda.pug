@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title Crear Nueva Agenda
+    link(rel='stylesheet', href='/styles.css')
+  body
+    h1 Crear Nueva Agenda
+    form(action='/agendas', method='POST')
+      div
+        label(for='profesional_id') Profesional ID:
+        input(type='text', name='profesional_id', required)
+      div
+        label(for='dias') Días:
+        input(type='text', name='dias', required)
+      div
+        label(for='horarios') Horarios:
+        input(type='text', name='horarios', required)
+      div
+        button(type='submit') Crear Agenda
+    a(href='/agendas') Volver a la lista de agendas

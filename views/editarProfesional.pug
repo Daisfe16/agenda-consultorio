@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    title Editar Profesional
+    link(rel='stylesheet', href='/styles.css')
+  body
+    .container
+      h1 Editar Profesional
+
+      form(action=`/profesionales/${profesional.id}/editar`, method="POST")
+        div
+          label(for="nombre_completo") Nombre Completo
+          input(type="text" name="nombre_completo" required value=profesional.nombre_completo)
+        
+        div
+          label(for="matricula") Matrícula
+          input(type="text" name="matricula" required value=profesional.matricula)
+        
+        div
+          label Especialidades
+          .checkbox-group
+            each especialidad in especialidades
+              div
+                label
+                  input(
+                    type="checkbox" 
+                    name="especialidades" 
+                    value=especialidad.id 
+                    checked=profesional.especialidades.includes(especialidad.nombre)
+                  ) 
+                  | #{especialidad.nombre}
+        
+        div
+          button(type="submit" class="button") Guardar Cambios
+
+      a(href="/profesionales" class="button") Volver a la Lista

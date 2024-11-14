@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title Agendas
+    link(rel='stylesheet', href='/styles.css')
+  body
+    h1 Agendas
+    if agendas.length > 0
+      table
+        thead
+          tr
+            th ID
+            th Profesional ID
+            th Días
+            th Horarios
+            th Acciones
+        tbody
+          each agenda in agendas
+            tr
+              td= agenda.id
+              td= agenda.profesional_id
+              td= agenda.dias
+              td= agenda.horarios
+              td
+                a(href=`/agendas/${agenda.id}`) Ver Detalle
+                | |
+                form(action=`/agendas/${agenda.id}/editar`, method='POST', style='display:inline')
+                  button(type='submit') Editar
+    else
+      p No hay agendas disponibles.
+    a(href='/agendas/nueva') Crear nueva agenda
+    br
+    a(href='/') Volver al inicio

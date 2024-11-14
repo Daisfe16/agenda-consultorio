@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    title Crear Nuevo Turno
+    link(rel='stylesheet', href='/styles.css') 
+  body
+    h1 Crear Nuevo Turno
+    form(action='/turnos', method='POST')
+      div
+        label(for='fecha') Fecha:
+        input(type='date', name='fecha', required)
+      div
+        label(for='hora') Hora:
+        input(type='time', name='hora', required)
+      div
+        label(for='paciente') Paciente:
+        input(type='text', name='paciente_id', required)
+      div
+        label(for='profesional') Profesional: 
+        input(type='text', name='profesional_id', required)
+      div 
+        label(for='especialidad') Especialidad: 
+        input(type='text', name='especialidad_id', required)
+      div 
+        label(for='sucursal') Especialidad: 
+        input(type='text', name='sucursal_id', required)
+      div          
+        button(type='submit') Crear Turno
+    a(href='/turnos') Volver a la lista de turnos
