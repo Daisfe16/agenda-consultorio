@@ -5,7 +5,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const nodemon = require('nodemon'); // Asegúrate de que nodemon esté instalado
 const routes = require('./routes/index'); // Asegúrate de que esta ruta sea correcta
-const authRoutes = require('./routes/auth');
+
 const authController = require('./controllers/authController');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
@@ -57,8 +57,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware para usar las rutas de autenticación
-app.use('/auth', authRoutes);
 
 
 // Rutas

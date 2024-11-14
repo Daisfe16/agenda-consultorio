@@ -5,6 +5,7 @@ const router = express.Router();
 const agendaController = require('../controllers/agendaController');
 const turnosController = require('../controllers/turnosController');
 const profesionalController = require('../controllers/profesionalController');
+const authController = require('../controllers/authController');
 
 router.get('/login', (req, res) => {
     res.render('login'); // Renderizar la vista de login
@@ -40,4 +41,9 @@ router.get('/profesionales/:id/editar', profesionalController.formularioEditarPr
 router.post('/profesionales/:id/editar', profesionalController.editarProfesional);
 router.post('/profesionales/:id/inactivar', profesionalController.inactivarProfesional);
 router.post('/profesionales/:id/activar', profesionalController.activarProfesional);
+
+router.get('/login', authController.getLogin);
+
+// Ruta para manejar el envío del formulario de login
+router.post('/login', authController.postLogin);
 module.exports = router;
