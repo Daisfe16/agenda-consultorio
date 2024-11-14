@@ -1,4 +1,4 @@
-const Agenda = require('../models/agenda');
+const Agenda = require('../models/Agenda');
 
 // Mostrar todas las agendas
 exports.mostrarAgendas = (req, res) => {

@@ -31,6 +31,7 @@ router.get('/turnos/:id', turnosController.mostrarTurno); // Ver el detalle del 
 router.get('/turnos/:id/editar', turnosController.mostrarFormularioEditarTurno); // Mostrar el formulario de edición
 router.post('/turnos/:id/editar', turnosController.editarTurno); // Procesar la edición
 router.post('/turnos/:id/eliminar', turnosController.eliminarTurno); // Eliminar el turno
+router.get('/turnos/horarios-ocupados/:profesionalId/:fecha', turnosController.obtenerHorariosOcupados);
 // Ruta para mostrar la lista de profesionales
 router.get('/profesionales', profesionalController.mostrarProfesional);
 router.get('/profesionales/nuevo', profesionalController.formularioNuevoProfesional);

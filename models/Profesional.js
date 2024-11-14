@@ -71,6 +71,25 @@ class Profesional {
     db.query('SELECT * FROM especialidades', callback);
   }
 
+  static configurarHorario(profesionalId, horarioManana, horarioTarde, callback) {
+    const queryDelete = 'DELETE FROM horarios_profesional WHERE profesional_id = ?';
+    db.query(queryDelete, [profesionalId], (err) => {
+      if (err) return callback(err);
+  
+      const horarios = [];
+  
+      if (horarioManana) {
+        horarios.push([profesionalId, 'mañana', horarioManana]);
+      }
+      if (horarioTarde) {
+        horarios.push([profesionalId, 'tarde', horarioTarde]);
+      }
+  
+      const queryInsert = 'INSERT INTO horarios_profesional (profesional_id, turno, horario) VALUES ?';
+      db.query(queryInsert, [horarios], callback);
+    });
+  }
+
   // Obtener profesional por ID con sus especialidades
   static obtenerPorId(id, callback) {
     const query = `

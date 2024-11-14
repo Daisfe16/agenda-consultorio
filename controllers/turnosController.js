@@ -142,3 +142,12 @@ exports.eliminarTurno = (req, res) => {
     res.redirect('/turnos');
   });
 };
+
+exports.obtenerHorariosOcupados = (req, res) => {
+  const { profesionalId, fecha } = req.params;
+
+  Turno.obtenerHorariosOcupados(profesionalId, fecha, (err, horariosOcupados) => {
+    if (err) return res.status(500).json({ error: 'Error al obtener horarios ocupados' });
+    res.json(horariosOcupados);
+  });
+};

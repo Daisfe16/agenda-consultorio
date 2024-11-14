@@ -1,3 +1,5 @@
+//- views/nuevoTurno.pug
+
 doctype html
 html
   head
@@ -8,10 +10,11 @@ html
     form(action='/turnos', method='POST')
       div
         label(for='fecha') Fecha:
-        input(type='date', name='fecha', required)
+        input(type='date', name='fecha', id='fecha', required)
       div
         label(for='hora') Hora:
-        input(type='time', name='hora', required)
+        div(id='horarios-disponibles') Cargando horarios...
+
       div
         label(for='paciente') Paciente:
         select(name='paciente_id', required)
@@ -36,6 +39,8 @@ html
       document.addEventListener('DOMContentLoaded', function() {
         const especialidadSelect = document.getElementById('especialidad_id');
         const profesionalSelect = document.getElementById('profesional_id');
+        const fechaInput = document.getElementById('fecha');
+        const horariosContainer = document.getElementById('horarios-disponibles');
 
         especialidadSelect.addEventListener('change', function() {
           const especialidadId = this.value;
@@ -61,4 +66,39 @@ html
             profesionalSelect.innerHTML = '<option value="">Selecciona un profesional</option>';
           }
         });
+
+        function cargarHorariosDisponibles() {
+          const profesionalId = profesionalSelect.value;
+          const fecha = fechaInput.value;
+
+          if (profesionalId && fecha) {
+            fetch(`/turnos/horarios-ocupados/${profesionalId}/${fecha}`)
+              .then(response => response.json())
+              .then(horariosOcupados => {
+                horariosContainer.innerHTML = '';
+                
+                const startTime = 9; // Hora de inicio
+                const endTime = 21; // Hora de fin
+                const interval = 30; // Intervalo en minutos
+                
+                for (let hour = startTime; hour < endTime; hour++) {
+                  for (let minute = 0; minute < 60; minute += interval) {
+                    const horaActual = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                    const estaOcupado = horariosOcupados.includes(horaActual);
+                    const divHorario = document.createElement('div');
+                    
+                    divHorario.textContent = estaOcupado ? `${horaActual} - Ocupado` : horaActual;
+                    divHorario.style.color = estaOcupado ? 'red' : 'green';
+                    horariosContainer.appendChild(divHorario);
+                  }
+                }
+              })
+              .catch(error => {
+                console.error(`Error al cargar horarios ocupados:`, error);
+              });
+          }
+        }
+
+        profesionalSelect.addEventListener('change', cargarHorariosDisponibles);
+        fechaInput.addEventListener('change', cargarHorariosDisponibles);
       });
