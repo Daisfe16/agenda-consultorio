@@ -1,4 +1,4 @@
-const db = require('./db'); // Asegúrate de tener una configuración de base de datos
+const db = require('./Db'); // Asegúrate de tener una configuración de base de datos
 
 class Paciente {
   static obtenerTodos(callback) {

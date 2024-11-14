@@ -1,4 +1,4 @@
-const db = require('./db');
+const db = require('./Db');
 
 class Profesional {
   // Obtener todos los profesionales con sus especialidades

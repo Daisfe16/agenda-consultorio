@@ -1,5 +1,5 @@
 const Turno = require('../models/Turno');
-const db = require('../models/db');
+const db = require('../models/Db');
 
 // Función para formatear la fecha en el formato "jueves 30 de noviembre"
 function formatearFecha(fecha) {
