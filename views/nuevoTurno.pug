@@ -54,6 +54,7 @@ html
         const sucursalSelect = document.getElementById('sucursal_id');
         const fechaInput = document.getElementById('fecha');
         const horaSelect = document.getElementById('hora');
+        let horarioProfesional = {}; // Para almacenar los horarios del profesional
 
         // Cargar profesionales cuando se selecciona una especialidad
         especialidadSelect.addEventListener('change', function() {
@@ -80,39 +81,67 @@ html
           }
         });
 
-        // Función para cargar horarios disponibles
+        // Cargar horarios disponibles para el profesional seleccionado
         function cargarHorariosDisponibles() {
           const profesionalId = profesionalSelect.value;
           const fecha = fechaInput.value;
 
           if (profesionalId && fecha) {
-            fetch(`/turnos/horarios-ocupados/${profesionalId}/${fecha}`)
+            // Obtener los horarios del profesional seleccionado
+            fetch(`/profesionales/especialidad/${especialidadSelect.value}`)
               .then(response => response.json())
-              .then(horariosOcupados => {
-                horaSelect.innerHTML = '<option value="">Selecciona un horario</option>'; // Reset select
-
-                const startTime = 9; // Hora de inicio
-                const endTime = 21; // Hora de fin
-                const interval = 30; // Intervalo en minutos
-
-                // Iterar sobre el rango de horas
-                for (let hour = startTime; hour < endTime; hour++) {
-                  for (let minute = 0; minute < 60; minute += interval) {
-                    const horaActual = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-                    const estaOcupado = horariosOcupados.includes(horaActual);
-
-                    // Solo agregar horarios disponibles
-                    if (!estaOcupado) {
-                      const option = document.createElement('option');
-                      option.value = horaActual;
-                      option.textContent = horaActual;
-                      horaSelect.appendChild(option);
-                    }
-                  }
+              .then(profesionales => {
+                const profesional = profesionales.find(p => p.id === parseInt(profesionalId));
+                if (profesional) {
+                  horarioProfesional = {
+                    inicio1: profesional.hora_inicio_turno1,
+                    fin1: profesional.hora_fin_turno1,
+                    inicio2: profesional.hora_inicio_turno2,
+                    fin2: profesional.hora_fin_turno2
+                  };
                 }
-              })
-              .catch(error => {
-                console.error('Error al cargar horarios ocupados:', error);
+
+                // Obtener los horarios ocupados para la fecha seleccionada
+                fetch(`/turnos/horarios-ocupados/${profesionalId}/${fecha}`)
+                  .then(response => response.json())
+                  .then(horariosOcupados => {
+                    horaSelect.innerHTML = '<option value="">Selecciona un horario</option>'; // Reset select
+
+                    // Definir las franjas horarias basadas en las horas del profesional
+                    const startTimes = [horarioProfesional.inicio1, horarioProfesional.inicio2];
+                    const endTimes = [horarioProfesional.fin1, horarioProfesional.fin2];
+
+                    startTimes.forEach((startTime, index) => {
+                      const endTime = endTimes[index];
+                      let startHour = parseInt(startTime.split(':')[0]);
+                      let startMinute = parseInt(startTime.split(':')[1]);
+                      let endHour = parseInt(endTime.split(':')[0]);
+                      let endMinute = parseInt(endTime.split(':')[1]);
+
+                      while (startHour < endHour || (startHour === endHour && startMinute < endMinute)) {
+                        const horaActual = `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
+                        const estaOcupado = horariosOcupados.includes(horaActual);
+
+                        // Solo agregar horarios disponibles
+                        if (!estaOcupado) {
+                          const option = document.createElement('option');
+                          option.value = horaActual;
+                          option.textContent = horaActual;
+                          horaSelect.appendChild(option);
+                        }
+
+                        // Incrementar la hora en intervalos de 30 minutos
+                        startMinute += 30;
+                        if (startMinute === 60) {
+                          startMinute = 0;
+                          startHour++;
+                        }
+                      }
+                    });
+                  })
+                  .catch(error => {
+                    console.error('Error al cargar horarios ocupados:', error);
+                  });
               });
           }
         }

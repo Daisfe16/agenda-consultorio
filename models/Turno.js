@@ -80,7 +80,7 @@ class Turno {
 
   static obtenerHorariosOcupados(profesionalId, fecha, callback) {
     db.query(
-      `SELECT hora FROM turnos WHERE profesional_id = ? AND fecha = ?`,
+      'SELECT hora FROM turnos WHERE profesional_id = ? AND fecha = ?',
       [profesionalId, fecha],
       (err, resultados) => {
         if (err) return callback(err);

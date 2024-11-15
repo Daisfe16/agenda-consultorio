@@ -62,21 +62,24 @@ exports.mostrarFormularioNuevoTurno = (req, res) => {
 };
 
 
-// Función para cargar profesionales según la especialidad seleccionada
 exports.obtenerProfesionalesPorEspecialidad = (req, res) => {
-    const especialidadId = req.params.especialidadId;
-    
-    db.query(
-        'SELECT profesionales.id, profesionales.nombre_completo FROM profesionales ' +
-        'JOIN profesional_especialidad ON profesionales.id = profesional_especialidad.profesional_id ' +
-        'WHERE profesional_especialidad.especialidad_id = ?',
-        [especialidadId],
-        (err, profesionales) => {
-            if (err) return res.status(500).send('Error al obtener profesionales.');
-            res.json(profesionales);
-        }
-    );
+  const especialidadId = req.params.especialidadId;
+
+  db.query(
+    `SELECT profesionales.id, profesionales.nombre_completo, 
+            profesionales.hora_inicio_turno1, profesionales.hora_fin_turno1, 
+            profesionales.hora_inicio_turno2, profesionales.hora_fin_turno2
+     FROM profesionales
+     JOIN profesional_especialidad ON profesionales.id = profesional_especialidad.profesional_id
+     WHERE profesional_especialidad.especialidad_id = ?`,
+    [especialidadId],
+    (err, profesionales) => {
+      if (err) return res.status(500).send('Error al obtener profesionales.');
+      res.json(profesionales);
+    }
+  );
 };
+
 
 // Función para crear un nuevo turno
 exports.crearTurno = (req, res) => {
@@ -100,33 +103,33 @@ exports.crearTurno = (req, res) => {
 exports.mostrarFormularioEditarTurno = (req, res) => {
   const turnoId = req.params.id;
 
-  // Obtener el turno por ID
   Turno.obtenerPorId(turnoId, (err, turno) => {
     if (err || !turno) return res.status(404).send('Turno no encontrado.');
 
-    // Obtener listas de pacientes, profesionales, especialidades y sucursales
     db.query('SELECT * FROM pacientes', (err, pacientes) => {
       if (err) return res.status(500).send('Error al obtener pacientes.');
-      
-      db.query('SELECT * FROM profesionales', (err, profesionales) => {
-        if (err) return res.status(500).send('Error al obtener profesionales.');
-        
-        db.query('SELECT * FROM especialidades', (err, especialidades) => {
-          if (err) return res.status(500).send('Error al obtener especialidades.');
-          
-          db.query('SELECT * FROM sucursales', (err, sucursales) => {
-            if (err) return res.status(500).send('Error al obtener sucursales.');
 
-            res.render('editarTurno', {
-              turno,
-              pacientes,
-              profesionales,
-              especialidades,
-              sucursales
+      db.query(`SELECT id, nombre_completo, hora_inicio_turno1, hora_fin_turno1, hora_inicio_turno2, hora_fin_turno2 FROM profesionales`, 
+        (err, profesionales) => {
+          if (err) return res.status(500).send('Error al obtener profesionales.');
+        
+          db.query('SELECT * FROM especialidades', (err, especialidades) => {
+            if (err) return res.status(500).send('Error al obtener especialidades.');
+
+            db.query('SELECT * FROM sucursales', (err, sucursales) => {
+              if (err) return res.status(500).send('Error al obtener sucursales.');
+
+              res.render('editarTurno', {
+                turno,
+                pacientes,
+                profesionales,
+                especialidades,
+                sucursales
+              });
             });
           });
-        });
-      });
+        }
+      );
     });
   });
 };
