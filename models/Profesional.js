@@ -109,6 +109,27 @@ class Profesional {
       callback(null, profesional);
     });
   }
+
+static obtenerHorarios(profesionalId, callback) {
+  const query = `
+    SELECT turno, horario FROM horarios_profesional
+    WHERE profesional_id = ?
+  `;
+  db.query(query, [profesionalId], (err, resultados) => {
+    if (err) return callback(err);
+
+    const horarios = { manana: null, tarde: null };
+    resultados.forEach(row => {
+      if (row.turno === 'mañana') {
+        horarios.manana = row.horario;
+      } else if (row.turno === 'tarde') {
+        horarios.tarde = row.horario;
+      }
+    });
+
+    callback(null, horarios);
+  });
+}
 }
 
 module.exports = Profesional;

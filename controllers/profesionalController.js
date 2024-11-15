@@ -36,12 +36,22 @@ exports.crearProfesional = (req, res) => {
 // Formulario para editar un profesional existente
 exports.formularioEditarProfesional = (req, res) => {
   const profesionalId = req.params.id;
+
   Profesional.obtenerPorId(profesionalId, (err, profesional) => {
     if (err) return res.status(500).send('Error al obtener el profesional');
-    
+
     Profesional.obtenerEspecialidades((err, especialidades) => {
       if (err) return res.status(500).send('Error al obtener especialidades');
-      res.render('editarProfesional', { profesional, especialidades });
+
+      Profesional.obtenerHorarios(profesionalId, (err, horarios) => {
+        if (err) return res.status(500).send('Error al obtener horarios');
+
+        res.render('editarProfesional', {
+          profesional,
+          especialidades,
+          horarios // Agregamos los horarios para pasarlos a la vista
+        });
+      });
     });
   });
 };
