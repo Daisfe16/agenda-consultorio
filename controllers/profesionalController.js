@@ -19,21 +19,40 @@ exports.formularioNuevoProfesional = (req, res) => {
 
 // Crear un nuevo profesional
 exports.crearProfesional = (req, res) => {
-  const { nombre_completo, matricula } = req.body;
+  const datos = req.body
+  console.log(datos)
+  const {
+    nombre_completo,
+    matricula,
+    hora_inicio_turno1,
+    hora_fin_turno1,
+    hora_inicio_turno2,
+    hora_fin_turno2
+  } = req.body;
+  
   let { especialidades } = req.body;
 
-  // Asegurar que especialidades sea un array
+  // Asegurarte que especialidades sea un array
   if (!Array.isArray(especialidades)) {
     especialidades = [especialidades];
   }
 
-  Profesional.crear({ nombre: nombre_completo, matricula, especialidades }, (err) => {
+  Profesional.crear({
+    nombre: nombre_completo,
+    matricula,
+    especialidades,
+    hora_inicio_turno1,
+    hora_fin_turno1,
+    hora_inicio_turno2,
+    hora_fin_turno2
+  }, (err) => {
     if (err) return res.status(500).send('Error al crear profesional');
     res.redirect('/profesionales');
   });
 };
 
-// Formulario para editar un profesional existente
+
+/// Mostrar formulario para editar un profesional existente
 exports.formularioEditarProfesional = (req, res) => {
   const profesionalId = req.params.id;
 
@@ -43,14 +62,10 @@ exports.formularioEditarProfesional = (req, res) => {
     Profesional.obtenerEspecialidades((err, especialidades) => {
       if (err) return res.status(500).send('Error al obtener especialidades');
 
-      Profesional.obtenerHorarios(profesionalId, (err, horarios) => {
-        if (err) return res.status(500).send('Error al obtener horarios');
-
-        res.render('editarProfesional', {
-          profesional,
-          especialidades,
-          horarios // Agregamos los horarios para pasarlos a la vista
-        });
+      // Obtener los horarios guardados para este profesional
+      res.render('editarProfesional', {
+        profesional,
+        especialidades
       });
     });
   });
@@ -58,19 +73,39 @@ exports.formularioEditarProfesional = (req, res) => {
 
 exports.editarProfesional = (req, res) => {
   const profesionalId = req.params.id;
-  const { nombre_completo, matricula } = req.body;
+  const {
+    nombre_completo,
+    matricula,
+    hora_inicio_turno1,
+    hora_fin_turno1,
+    hora_inicio_turno2,
+    hora_fin_turno2
+  } = req.body;
   let { especialidades } = req.body;
 
-  // Convertir a array si especialidades es un solo valor
   if (!Array.isArray(especialidades)) {
     especialidades = [especialidades];
   }
 
-  Profesional.editar(profesionalId, { nombre: nombre_completo, matricula, especialidades }, (err) => {
-    if (err) return res.status(500).send('Error al editar el profesional');
-    res.redirect('/profesionales');
-  });
+  // Actualizar datos del profesional, incluyendo horarios
+  Profesional.editar(
+    profesionalId,
+    {
+      nombre: nombre_completo,
+      matricula,
+      especialidades,
+      hora_inicio_turno1,
+      hora_fin_turno1,
+      hora_inicio_turno2,
+      hora_fin_turno2
+    },
+    (err) => {
+      if (err) return res.status(500).send('Error al editar el profesional');
+      res.redirect('/profesionales');
+    }
+  );
 };
+
 exports.inactivarProfesional = (req, res) => {
   const profesionalId = req.params.id;
   Profesional.inactivar(profesionalId, (err) => {
@@ -84,16 +119,5 @@ exports.activarProfesional = (req, res) => {
   Profesional.activar(profesionalId, (err) => {
     if (err) return res.status(500).send('Error al activar el profesional');
     res.redirect('/profesionales');
-  });
-};
-
-// Método para guardar los horarios de un profesional
-exports.guardarHorarios = (req, res) => {
-  const profesionalId = req.params.id;
-  const { horario_manana_inicio, horario_manana_fin, horario_tarde_inicio, horario_tarde_fin } = req.body;
-
-  Profesional.configurarHorario(profesionalId, horario_manana_inicio, horario_manana_fin, horario_tarde_inicio, horario_tarde_fin, (err) => {
-    if (err) return res.status(500).send('Error al configurar el horario del profesional');
-    res.redirect(`/profesionales/${profesionalId}/editar`);
   });
 };

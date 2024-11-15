@@ -44,8 +44,8 @@ html
           
           // Horario Mañana
           div
-            label(for="horario_manana_inicio") Inicio Mañana
-            select(name="horario_manana_inicio" id="horario_manana_inicio" onchange="toggleHorarioFin('horario_manana_inicio', 'horario_manana_fin')")
+            label(for="hora_inicio_turno1") Inicio Mañana
+            select(name="hora_inicio_turno1" id="hora_inicio_turno1" type="" onchange="toggleHorarioFin('hora_inicio_turno1', 'hora_fin_turno1')")
               option(value="no") No disponible
               option(value="09:00") 9:00
               option(value="09:30") 9:30
@@ -58,8 +58,8 @@ html
               option(value="13:00") 13:00
 
           div
-            label(for="horario_manana_fin") Fin Mañana
-            select(name="horario_manana_fin" id="horario_manana_fin")
+            label(for="hora_fin_turno1") Fin Mañana
+            select(name="hora_fin_turno1" id="hora_fin_turno1")
               option(value="no") No disponible
               option(value="09:00") 9:00
               option(value="09:30") 9:30
@@ -73,8 +73,8 @@ html
 
           // Horario Tarde
           div
-            label(for="horario_tarde_inicio") Inicio Tarde
-            select(name="horario_tarde_inicio" id="horario_tarde_inicio" onchange="toggleHorarioFin('horario_tarde_inicio', 'horario_tarde_fin')")
+            label(for="hora_inicio_turno2") Inicio Tarde
+            select(name="hora_inicio_turno2" id="hora_inicio_turno2" onchange="toggleHorarioFin('hora_inicio_turno2', 'horario_fin_turno2')")
               option(value="no") No disponible
               option(value="16:00") 16:00
               option(value="16:30") 16:30
@@ -89,8 +89,8 @@ html
               option(value="21:00") 21:00
 
           div
-            label(for="horario_tarde_fin") Fin Tarde
-            select(name="horario_tarde_fin" id="horario_tarde_fin")
+            label(for="hora_fin_turno2") Fin Tarde
+            select(name="hora_fin_turno2" id="hora_fin_turno2")
               option(value="no") No disponible
               option(value="16:00") 16:00
               option(value="16:30") 16:30

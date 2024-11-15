@@ -1,5 +1,3 @@
-//- views/nuevoTurno.pug
-
 doctype html
 html
   head
@@ -14,34 +12,50 @@ html
         select(name='paciente_id', required)
           each paciente in pacientes
             option(value=paciente.id) #{paciente.nombre_completo}
+
       div
         label(for='especialidad') Especialidad:
         select(name='especialidad_id' id='especialidad_id' required)
           option(value='') Selecciona una especialidad
           each especialidad in especialidades
             option(value=especialidad.id) #{especialidad.nombre}
+
       div
         label(for='profesional') Profesional:
         select(name='profesional_id' id='profesional_id' required)
           option(value='') Selecciona un profesional
+
+      div
+        label(for='sucursal') Sucursal:
+        select(name='sucursal_id' id='sucursal_id' required)
+          option(value='') Selecciona una sucursal
+          each sucursal in sucursales
+            option(value=sucursal.id) #{sucursal.nombre}
+
       div
         label(for='fecha') Fecha:
         input(type='date', name='fecha', id='fecha', required)
+
       div
         label(for='hora') Hora:
-        div(id='horarios-disponibles') Cargando horarios...
-             
+        select(name='hora', id='hora', required)
+          option(value='') Selecciona un horario
+
+      div
         button(type='submit') Crear Turno
+
     a(href='/turnos') Volver a la lista de turnos
 
-    // Script para actualizar la lista de profesionales según la especialidad seleccionada
+    // Script para actualizar la lista de profesionales y horarios
     script.
       document.addEventListener('DOMContentLoaded', function() {
         const especialidadSelect = document.getElementById('especialidad_id');
         const profesionalSelect = document.getElementById('profesional_id');
+        const sucursalSelect = document.getElementById('sucursal_id');
         const fechaInput = document.getElementById('fecha');
-        const horariosContainer = document.getElementById('horarios-disponibles');
+        const horaSelect = document.getElementById('hora');
 
+        // Cargar profesionales cuando se selecciona una especialidad
         especialidadSelect.addEventListener('change', function() {
           const especialidadId = this.value;
 
@@ -50,7 +64,6 @@ html
               .then(response => response.json())
               .then(profesionales => {
                 profesionalSelect.innerHTML = '<option value="">Selecciona un profesional</option>';
-
                 profesionales.forEach(profesional => {
                   const option = document.createElement('option');
                   option.value = profesional.id;
@@ -67,6 +80,7 @@ html
           }
         });
 
+        // Función para cargar horarios disponibles
         function cargarHorariosDisponibles() {
           const profesionalId = profesionalSelect.value;
           const fecha = fechaInput.value;
@@ -75,30 +89,35 @@ html
             fetch(`/turnos/horarios-ocupados/${profesionalId}/${fecha}`)
               .then(response => response.json())
               .then(horariosOcupados => {
-                horariosContainer.innerHTML = '';
-                
+                horaSelect.innerHTML = '<option value="">Selecciona un horario</option>'; // Reset select
+
                 const startTime = 9; // Hora de inicio
                 const endTime = 21; // Hora de fin
                 const interval = 30; // Intervalo en minutos
-                
+
+                // Iterar sobre el rango de horas
                 for (let hour = startTime; hour < endTime; hour++) {
                   for (let minute = 0; minute < 60; minute += interval) {
                     const horaActual = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
                     const estaOcupado = horariosOcupados.includes(horaActual);
-                    const divHorario = document.createElement('div');
-                    
-                    divHorario.textContent = estaOcupado ? `${horaActual} - Ocupado` : horaActual;
-                    divHorario.style.color = estaOcupado ? 'red' : 'green';
-                    horariosContainer.appendChild(divHorario);
+
+                    // Solo agregar horarios disponibles
+                    if (!estaOcupado) {
+                      const option = document.createElement('option');
+                      option.value = horaActual;
+                      option.textContent = horaActual;
+                      horaSelect.appendChild(option);
+                    }
                   }
                 }
               })
               .catch(error => {
-                console.error(`Error al cargar horarios ocupados:`, error);
+                console.error('Error al cargar horarios ocupados:', error);
               });
           }
         }
 
+        // Cargar horarios cuando se selecciona un profesional y una fecha
         profesionalSelect.addEventListener('change', cargarHorariosDisponibles);
         fechaInput.addEventListener('change', cargarHorariosDisponibles);
       });

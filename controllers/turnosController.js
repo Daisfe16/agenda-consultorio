@@ -38,20 +38,29 @@ exports.mostrarTurno = (req, res) => {
 // Controlador para mostrar el formulario de nuevo turno
 // Función para obtener todas las especialidades y pacientes
 exports.mostrarFormularioNuevoTurno = (req, res) => {
-    db.query('SELECT * FROM especialidades', (err, especialidades) => {
-        if (err) return res.status(500).send('Error al obtener especialidades.');
+  // Obtener las especialidades y pacientes
+  db.query('SELECT * FROM especialidades', (err, especialidades) => {
+      if (err) return res.status(500).send('Error al obtener especialidades.');
 
-        db.query('SELECT * FROM pacientes', (err, pacientes) => {
-            if (err) return res.status(500).send('Error al obtener pacientes.');
+      db.query('SELECT * FROM pacientes', (err, pacientes) => {
+          if (err) return res.status(500).send('Error al obtener pacientes.');
 
-            res.render('nuevoTurno', {
-                especialidades,
-                pacientes,
-                profesionales: [] // Inicialmente vacío
-            });
-        });
-    });
+          // Obtener todas las sucursales
+          db.query('SELECT * FROM sucursales', (err, sucursales) => {
+              if (err) return res.status(500).send('Error al obtener sucursales.');
+
+              // Pasar las sucursales a la vista junto con las demás opciones
+              res.render('nuevoTurno', {
+                  especialidades,
+                  pacientes,
+                  sucursales, // Incluir las sucursales en el render
+                  profesionales: [] // Inicialmente vacío, se actualizará después
+              });
+          });
+      });
+  });
 };
+
 
 // Función para cargar profesionales según la especialidad seleccionada
 exports.obtenerProfesionalesPorEspecialidad = (req, res) => {
@@ -148,6 +157,9 @@ exports.obtenerHorariosOcupados = (req, res) => {
 
   Turno.obtenerHorariosOcupados(profesionalId, fecha, (err, horariosOcupados) => {
     if (err) return res.status(500).json({ error: 'Error al obtener horarios ocupados' });
+
+    // Responder con los horarios ocupados como una lista
     res.json(horariosOcupados);
   });
 };
+
